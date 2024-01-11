@@ -1,7 +1,9 @@
 library chatnels_widget;
 
+import 'dart:convert';
+
+import 'package:chatnels_widget/enums.dart';
 import 'package:chatnels_widget/htmlTemplate.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,12 +15,20 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 class Chatnels extends StatefulWidget {
   final String orgDomain;
   final String serviceProvider;
-  String sessionToken;
+  final String sessionToken;
+  final void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
+  final VoidCallback? onReady;
+  final VoidCallback? onRequestSession;
+  final VoidCallback? onError;
 
-  Chatnels(
+  const Chatnels(
       {required this.orgDomain,
       required this.sessionToken,
       this.serviceProvider = 'chatnels.com',
+      this.onChatnelsEvent,
+      this.onReady,
+      this.onRequestSession,
+      this.onError,
       Key? key})
       : super(key: key);
 
@@ -27,10 +37,22 @@ class Chatnels extends StatefulWidget {
 }
 
 class _ChatnelsState extends State<Chatnels> {
+  late String sessionToken;
+  late void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
+  late VoidCallback? onReady;
+  late VoidCallback? onRequestSession;
+  late VoidCallback? onError;
   late final WebViewController _controller;
 
   @override
   void initState() {
+    super.initState();
+    sessionToken = widget.sessionToken;
+    onChatnelsEvent = widget.onChatnelsEvent;
+    onReady = widget.onReady;
+    onRequestSession = widget.onRequestSession;
+    onError = widget.onError;
+
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
@@ -47,10 +69,27 @@ class _ChatnelsState extends State<Chatnels> {
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..addJavaScriptChannel('Print',
-          onMessageReceived: (JavaScriptMessage message) {})
+          onMessageReceived: (JavaScriptMessage message) {
+        try {
+          Map<String, dynamic> jsonObj = JsonDecoder().convert(message.message);
+          String type = jsonObj['type'];
+          Map<String, String> data = jsonObj['data'];
+
+          if (type == InternalChatnelsEvents.APP_READY.name) {
+            onReady!();
+          } else if (type == InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name) {
+            onError!();
+          } else if (type == InternalChatnelsEvents.APP_REQUEST_FOCUS.name) {
+            // unable to find any request focus method for the webview
+          } else if (type == ChatnelsEvents.REAUTH.name) {
+            onRequestSession!();
+          } else {
+            onChatnelsEvent!(type, data);
+          }
+        } catch (e) {}
+      })
       ..loadHtmlString(
-          htmlTemplate(
-              widget.orgDomain, widget.serviceProvider, widget.sessionToken),
+          htmlTemplate(widget.orgDomain, widget.serviceProvider, sessionToken),
           baseUrl: 'chatnels://local.chatnels.com/');
 
     // #docregion platform_features
@@ -67,6 +106,29 @@ class _ChatnelsState extends State<Chatnels> {
   void didUpdateWidget(covariant Chatnels oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
+
+    if (widget.sessionToken != oldWidget.sessionToken ||
+        widget.onChatnelsEvent != oldWidget.onChatnelsEvent ||
+        widget.onReady != oldWidget.onReady ||
+        widget.onRequestSession != oldWidget.onRequestSession ||
+        widget.onError != oldWidget.onError) {
+      setState(() {
+        sessionToken = widget.sessionToken;
+        onChatnelsEvent = widget.onChatnelsEvent;
+        onReady = widget.onReady;
+        onRequestSession = widget.onRequestSession;
+        onError = widget.onError;
+      });
+
+      // check if sessionToken has changed and fire Webview Javascript event
+      if (widget.sessionToken != oldWidget.sessionToken) {
+        _controller.runJavaScript('''
+        if (window.ChatnelsClient) {
+            window.ChatnelsClient.updateSessionToken("$sessionToken");
+        }
+        ''');
+      }
+    }
   }
 
   @override
