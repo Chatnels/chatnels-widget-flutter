@@ -21,9 +21,7 @@ String htmlTemplate(
               ${initView != null ? "initView: '${const JsonEncoder().convert(initView)}'" : ''}
             });
             w.ChatnelsClient.on('chatnels:message', function(data) {
-              let message = data;
-              w.ReactNativeWebView.postMessage(message);
-              message = undefined;
+              w.FlutterWebView.postMessage(data);
             });
           }
         }

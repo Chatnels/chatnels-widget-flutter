@@ -16,6 +16,7 @@ class Chatnels extends StatefulWidget {
   final String orgDomain;
   final String serviceProvider;
   final String sessionToken;
+  final Map<String, dynamic> viewData;
   final void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
   final VoidCallback? onReady;
   final VoidCallback? onRequestSession;
@@ -25,6 +26,7 @@ class Chatnels extends StatefulWidget {
       {required this.orgDomain,
       required this.sessionToken,
       this.serviceProvider = 'chatnels.com',
+      required this.viewData,
       this.onChatnelsEvent,
       this.onReady,
       this.onRequestSession,
@@ -38,6 +40,7 @@ class Chatnels extends StatefulWidget {
 
 class _ChatnelsState extends State<Chatnels> {
   late String sessionToken;
+  late Map<String, dynamic> viewData;
   late void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
   late VoidCallback? onReady;
   late VoidCallback? onRequestSession;
@@ -48,6 +51,7 @@ class _ChatnelsState extends State<Chatnels> {
   void initState() {
     super.initState();
     sessionToken = widget.sessionToken;
+    viewData = widget.viewData;
     onChatnelsEvent = widget.onChatnelsEvent;
     onReady = widget.onReady;
     onRequestSession = widget.onRequestSession;
@@ -68,26 +72,9 @@ class _ChatnelsState extends State<Chatnels> {
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel('Print',
-          onMessageReceived: (JavaScriptMessage message) {
-        try {
-          Map<String, dynamic> jsonObj = JsonDecoder().convert(message.message);
-          String type = jsonObj['type'];
-          Map<String, String> data = jsonObj['data'];
-
-          if (type == InternalChatnelsEvents.APP_READY.name) {
-            onReady!();
-          } else if (type == InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name) {
-            onError!();
-          } else if (type == InternalChatnelsEvents.APP_REQUEST_FOCUS.name) {
-            // unable to find any request focus method for the webview
-          } else if (type == ChatnelsEvents.REAUTH.name) {
-            onRequestSession!();
-          } else {
-            onChatnelsEvent!(type, data);
-          }
-        } catch (e) {}
-      })
+      ..setNavigationDelegate(NavigationDelegate())
+      ..addJavaScriptChannel('FlutterWebView',
+          onMessageReceived: _onWebViewMessageReceived)
       ..loadHtmlString(
           htmlTemplate(widget.orgDomain, widget.serviceProvider, sessionToken),
           baseUrl: 'chatnels://local.chatnels.com/');
@@ -128,7 +115,51 @@ class _ChatnelsState extends State<Chatnels> {
         }
         ''');
       }
+      if (widget.viewData != oldWidget.viewData) {
+        _injectEmbedData(widget.viewData);
+      }
     }
+  }
+
+  void _onWebViewMessageReceived(JavaScriptMessage message) {
+    try {
+      Map<String, dynamic> jsonObj = JsonDecoder().convert(message.message);
+      String type = jsonObj['type'];
+      Map<String, String> data = jsonObj['data'];
+
+      if (type == InternalChatnelsEvents.APP_READY.name) {
+        _injectEmbedData(viewData);
+        onReady!();
+      } else if (type == InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name) {
+        onError!();
+      } else if (type == InternalChatnelsEvents.APP_REQUEST_FOCUS.name) {
+        // unable to find any request focus method for the webview
+      } else if (type == ChatnelsEvents.REAUTH.name) {
+        onRequestSession!();
+      } else {
+        onChatnelsEvent!(type, data);
+      }
+    } catch (e) {}
+  }
+
+  void _injectEmbedData(Map<String, dynamic> viewData) {
+    try {
+      String type = viewData['type'];
+      String data = JsonEncoder().convert(viewData['data']);
+      String options = JsonEncoder().convert(viewData['options']);
+      String colorScheme = JsonEncoder().convert(viewData['colorScheme']);
+
+      _controller.runJavaScript('''
+      if (window.ChatnelsClient) {
+        window.ChatnelsClient.showView({
+          type: "$type",
+          data: $data,
+          options: $options,
+          colorScheme: $colorScheme,
+        });
+      }
+      ''');
+    } catch (e) {}
   }
 
   @override
