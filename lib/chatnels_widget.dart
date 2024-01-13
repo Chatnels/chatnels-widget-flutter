@@ -72,12 +72,27 @@ class _ChatnelsState extends State<Chatnels> {
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate())
-      ..addJavaScriptChannel('FlutterWebView',
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageStarted: (String url) {
+          debugPrint('Page started loading: $url');
+        },
+        onWebResourceError: (WebResourceError error) {
+          debugPrint('''
+            Page resource error:
+            code: ${error.errorCode}
+            description: ${error.description}
+            errorType: ${error.errorType}
+            isForMainFrame: ${error.isForMainFrame}
+          ''');
+        },
+      ))
+      ..addJavaScriptChannel('ChatnelsWebView',
           onMessageReceived: _onWebViewMessageReceived)
       ..loadHtmlString(
-          htmlTemplate(widget.orgDomain, widget.serviceProvider, sessionToken),
+          htmlTemplate(
+              widget.orgDomain, widget.serviceProvider, sessionToken, viewData),
           baseUrl: 'chatnels://local.chatnels.com/');
+    // ..loadRequest(Uri.parse('https://www.chatnels.com'));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
@@ -164,9 +179,8 @@ class _ChatnelsState extends State<Chatnels> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: WebViewWidget(
+    return WebViewWidget(
       controller: _controller,
-    ));
+    );
   }
 }

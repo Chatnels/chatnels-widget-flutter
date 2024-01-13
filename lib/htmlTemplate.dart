@@ -18,10 +18,10 @@ String htmlTemplate(
             w.ChatnelsClient.load({
               domain: '$orgDomain',
               sessionToken: '$sessionToken',
-              ${initView != null ? "initView: '${const JsonEncoder().convert(initView)}'" : ''}
+              ${initView != null ? "initView: ${const JsonEncoder().convert(initView)}" : ''}
             });
             w.ChatnelsClient.on('chatnels:message', function(data) {
-              w.FlutterWebView.postMessage(data);
+              w.ChatnelsWebView.postMessage(data);
             });
           }
         }

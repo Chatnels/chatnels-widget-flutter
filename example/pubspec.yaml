@@ -1,16 +1,17 @@
-name: chatnels_widget
-description: "Chatnels for Flutter."
-version: 0.0.1
-# authors: Justin Lee <justin.lee@chatnels.com>
-homepage: https://www.chatnels.com
+name: example
+description: "Example for Chatnels Widget."
+version: 1.0.0+1
+publish_to: 'none'
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
-  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  chatnels_widget:
+    path: ../
+  cupertino_icons: ^1.0.2
   webview_flutter: ^4.4.4
 
 dev_dependencies:
@@ -19,3 +20,4 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
+  uses-material-design: true
