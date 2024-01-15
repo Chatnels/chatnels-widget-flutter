@@ -39,23 +39,11 @@ class Chatnels extends StatefulWidget {
 }
 
 class _ChatnelsState extends State<Chatnels> {
-  late String sessionToken;
-  late Map<String, dynamic> viewData;
-  late void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
-  late VoidCallback? onReady;
-  late VoidCallback? onRequestSession;
-  late VoidCallback? onError;
-  late final WebViewController _controller;
+  late WebViewController _controller;
 
   @override
   void initState() {
     super.initState();
-    sessionToken = widget.sessionToken;
-    viewData = widget.viewData;
-    onChatnelsEvent = widget.onChatnelsEvent;
-    onReady = widget.onReady;
-    onRequestSession = widget.onRequestSession;
-    onError = widget.onError;
 
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -71,6 +59,7 @@ class _ChatnelsState extends State<Chatnels> {
         WebViewController.fromPlatformCreationParams(params);
 
     controller
+      ..clearCache()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (String url) {
@@ -89,8 +78,8 @@ class _ChatnelsState extends State<Chatnels> {
       ..addJavaScriptChannel('ChatnelsWebView',
           onMessageReceived: _onWebViewMessageReceived)
       ..loadHtmlString(
-          htmlTemplate(
-              widget.orgDomain, widget.serviceProvider, sessionToken, viewData),
+          htmlTemplate(widget.orgDomain, widget.serviceProvider,
+              widget.sessionToken, widget.viewData),
           baseUrl: 'chatnels://local.chatnels.com/');
     // ..loadRequest(Uri.parse('https://www.chatnels.com'));
 
@@ -106,34 +95,29 @@ class _ChatnelsState extends State<Chatnels> {
 
   @override
   void didUpdateWidget(covariant Chatnels oldWidget) {
-    // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
 
-    if (widget.sessionToken != oldWidget.sessionToken ||
-        widget.onChatnelsEvent != oldWidget.onChatnelsEvent ||
-        widget.onReady != oldWidget.onReady ||
-        widget.onRequestSession != oldWidget.onRequestSession ||
-        widget.onError != oldWidget.onError) {
-      setState(() {
-        sessionToken = widget.sessionToken;
-        onChatnelsEvent = widget.onChatnelsEvent;
-        onReady = widget.onReady;
-        onRequestSession = widget.onRequestSession;
-        onError = widget.onError;
-      });
-
+    if (widget.sessionToken != oldWidget.sessionToken) {
       // check if sessionToken has changed and fire Webview Javascript event
-      if (widget.sessionToken != oldWidget.sessionToken) {
-        _controller.runJavaScript('''
-        if (window.ChatnelsClient) {
-            window.ChatnelsClient.updateSessionToken("$sessionToken");
-        }
-        ''');
-      }
-      if (widget.viewData != oldWidget.viewData) {
-        _injectEmbedData(widget.viewData);
-      }
+      debugPrint(
+          '''session token updated: old token - ${oldWidget.sessionToken}, new token ${widget.sessionToken}''');
+      _injectSessionToken(widget.sessionToken);
     }
+
+    if (JsonEncoder().convert(widget.viewData) !=
+        JsonEncoder().convert(oldWidget.viewData)) {
+      debugPrint(
+          '''view Data updated: old view Data - ${oldWidget.viewData}, new token ${widget.viewData}''');
+      _injectEmbedData(widget.viewData);
+    }
+  }
+
+  void updateSessionToken(String sessionToken) {
+    _injectSessionToken(sessionToken);
+  }
+
+  void updateViewData(Map<String, dynamic> viewData) {
+    _injectEmbedData(viewData);
   }
 
   void _onWebViewMessageReceived(JavaScriptMessage message) {
@@ -143,16 +127,21 @@ class _ChatnelsState extends State<Chatnels> {
       Map<String, String> data = jsonObj['data'];
 
       if (type == InternalChatnelsEvents.APP_READY.name) {
-        _injectEmbedData(viewData);
-        onReady!();
+        debugPrint('''Chatnels widget App Ready''');
+        _injectEmbedData(widget.viewData);
+        widget.onReady!();
       } else if (type == InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name) {
-        onError!();
+        debugPrint('''Chatnels widget onError''');
+        widget.onError!();
       } else if (type == InternalChatnelsEvents.APP_REQUEST_FOCUS.name) {
         // unable to find any request focus method for the webview
       } else if (type == ChatnelsEvents.REAUTH.name) {
-        onRequestSession!();
+        debugPrint('''Chatnels widget onRequestSession''');
+        widget.onRequestSession!();
       } else {
-        onChatnelsEvent!(type, data);
+        debugPrint(
+            '''Chatnels widget onChatnelsEvent - type: $type - data: $data ''');
+        widget.onChatnelsEvent!(type, data);
       }
     } catch (e) {}
   }
@@ -175,6 +164,14 @@ class _ChatnelsState extends State<Chatnels> {
       }
       ''');
     } catch (e) {}
+  }
+
+  void _injectSessionToken(String sessionToken) {
+    _controller.runJavaScript('''
+        if (window.ChatnelsClient) {
+            window.ChatnelsClient.updateSessionToken("$sessionToken");
+        }
+        ''');
   }
 
   @override
