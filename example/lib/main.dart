@@ -130,10 +130,6 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                       'displayId': value['displayId'],
                     if (value['chatId'].length > 0) 'chatId': value['chatId']
                   },
-                  'colorScheme': const {
-                    'navbarColor': '#356b5c',
-                    'navbarFontColor': 'white',
-                  },
                 },
                 onRequestSession: () {
                   _showDialog();
