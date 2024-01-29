@@ -31,9 +31,16 @@ class ChatnelsHomePage extends StatefulWidget {
 
 class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
   final ValueNotifier<Map<String, dynamic>> sessionTokenNotifier =
-      ValueNotifier<Map<String, dynamic>>(
-          {'orgDomain': '', 'sessionToken': '', 'displayId': '', 'chatId': ''});
+      ValueNotifier<Map<String, dynamic>>({
+    'serviceProvider': 'chatnels.com',
+    'orgDomain': '',
+    'sessionToken': '',
+    'displayId': '',
+    'chatId': ''
+  });
 
+  final TextEditingController _serviceProviderInputCtrl =
+      TextEditingController(text: 'chatnels.com');
   final TextEditingController _orgDoaminInputCtrl =
       TextEditingController(text: '');
   final TextEditingController _sessionTokenInputCtrl =
@@ -55,6 +62,14 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: TextFormField(
+                            controller: _serviceProviderInputCtrl,
+                            decoration: const InputDecoration(
+                                labelText: 'Service Provider'),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(8),
                           child: TextFormField(
@@ -95,12 +110,14 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         debugPrint('''
+                          serviceProvider: ${_serviceProviderInputCtrl.text}
                           orgDomain: ${_orgDoaminInputCtrl.text}
                           sessionToken: ${_sessionTokenInputCtrl.text}
                           displayId: ${_displayIdInputCtrl.text}
                           chatId: ${_chatIdInputCtrl.text}
                         ''');
                         sessionTokenNotifier.value = {
+                          'serviceProvider': _serviceProviderInputCtrl.text,
                           'orgDomain': _orgDoaminInputCtrl.text,
                           'sessionToken': _sessionTokenInputCtrl.text,
                           'displayId': _displayIdInputCtrl.text,
@@ -120,21 +137,27 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
         body: ValueListenableBuilder(
             valueListenable: sessionTokenNotifier,
             builder: (context, value, child) {
-              return Chatnels(
-                orgDomain: value['orgDomain'],
-                sessionToken: value['sessionToken'],
-                viewData: {
-                  'type': 'chat',
-                  'data': {
-                    if (value['displayId'].length > 0)
-                      'displayId': value['displayId'],
-                    if (value['chatId'].length > 0) 'chatId': value['chatId']
+              if (value['orgDomain'].length > 0 &&
+                  value['sessionToken'].length > 0) {
+                return Chatnels(
+                  serviceProvider: value['serviceProvider'],
+                  orgDomain: value['orgDomain'],
+                  sessionToken: value['sessionToken'],
+                  viewData: {
+                    'type': 'chat',
+                    'data': {
+                      if (value['displayId'].length > 0)
+                        'displayId': value['displayId'],
+                      if (value['chatId'].length > 0) 'chatId': value['chatId']
+                    },
                   },
-                },
-                onRequestSession: () {
-                  _showDialog();
-                },
-              );
+                  onRequestSession: () {
+                    _showDialog();
+                  },
+                );
+              }
+
+              return Container();
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
