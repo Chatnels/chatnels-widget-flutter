@@ -1,4 +1,6 @@
 enum ChatnelsEvents {
+  CHAT_ACTION,
+  CHAT_CLOSED,
   EXTERNAL_URL,
   INBOX_BACK,
   INBOX_ITEM_CLICKED,
@@ -10,6 +12,10 @@ enum ChatnelsEvents {
 extension ChatnelsEventsExtension on ChatnelsEvents {
   String get name {
     switch (this) {
+      case ChatnelsEvents.CHAT_ACTION:
+        return 'chat:action';
+      case ChatnelsEvents.CHAT_CLOSED:
+        return 'chat:closed';
       case ChatnelsEvents.EXTERNAL_URL:
         return 'external:url';
       case ChatnelsEvents.INBOX_BACK:

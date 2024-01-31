@@ -1,3 +1,4 @@
+import 'package:chatnels_widget/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:chatnels_widget/chatnels_widget.dart';
 
@@ -151,8 +152,19 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                       if (value['chatId'].length > 0) 'chatId': value['chatId']
                     },
                   },
+                  onReady: () {
+                  },
                   onRequestSession: () {
                     _showDialog();
+                  },
+                  onChatnelsEvent: (type, data) {
+                    if (type == ChatnelsEvents.CHAT_ACTION.name) {
+                      // handle chat cmd action here
+                      debugPrint('''
+                      chat action $type:
+                      data: $data
+                      ''');
+                    }
                   },
                 );
               }

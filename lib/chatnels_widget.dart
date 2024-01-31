@@ -81,7 +81,6 @@ class _ChatnelsState extends State<Chatnels> {
           htmlTemplate(widget.orgDomain, widget.serviceProvider,
               widget.sessionToken, widget.viewData),
           baseUrl: 'chatnels://local.chatnels.com/');
-    // ..loadRequest(Uri.parse('https://www.chatnels.com'));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
@@ -123,8 +122,8 @@ class _ChatnelsState extends State<Chatnels> {
   void _onWebViewMessageReceived(JavaScriptMessage message) {
     try {
       Map<String, dynamic> jsonObj = JsonDecoder().convert(message.message);
-      String type = jsonObj['type'];
-      Map<String, String> data = jsonObj['data'];
+      dynamic type = jsonObj['type'];
+      dynamic data = jsonObj['data'];
 
       if (type == InternalChatnelsEvents.APP_READY.name) {
         debugPrint('''Chatnels widget App Ready''');
@@ -143,7 +142,12 @@ class _ChatnelsState extends State<Chatnels> {
             '''Chatnels widget onChatnelsEvent - type: $type - data: $data ''');
         widget.onChatnelsEvent!(type, data);
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint('''
+      Error in parsing Chatnels webview message:
+      $e
+      ''');
+    }
   }
 
   void _injectEmbedData(Map<String, dynamic> viewData) {
