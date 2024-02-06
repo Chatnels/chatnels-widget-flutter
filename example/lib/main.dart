@@ -152,6 +152,15 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                       if (value['chatId'].length > 0) 'chatId': value['chatId']
                     },
                   },
+                  colorScheme: const {
+                    'chatTheme': 'ios',
+                    'chatInBoundBgColor': '245 245 245',
+                    'chatInBoundTextColor': '0 0 0',
+                    'chatOutBoundBgColor': '67 133 245',
+                    'chatOutBoundTextColor': '255 255 255',
+                    'chatDateDividerBgColor': '206 206 206',
+                    'chatDateDividerBgOpacity': 0,
+                  },
                   onReady: () {
                   },
                   onRequestSession: () {

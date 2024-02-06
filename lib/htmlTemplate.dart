@@ -21,7 +21,9 @@ String htmlTemplate(
               ${initView != null ? "initView: ${const JsonEncoder().convert(initView)}" : ''}
             });
             w.ChatnelsClient.on('chatnels:message', function(data) {
-              w.ChatnelsWebView.postMessage(data);
+              if(w.ChatnelsWebView) {
+                w.ChatnelsWebView.postMessage(data);
+              }
             });
           }
         }

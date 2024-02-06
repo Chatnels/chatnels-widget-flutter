@@ -17,6 +17,7 @@ class Chatnels extends StatefulWidget {
   final String serviceProvider;
   final String sessionToken;
   final Map<String, dynamic> viewData;
+  final Map<String, dynamic>? colorScheme;
   final void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
   final VoidCallback? onReady;
   final VoidCallback? onRequestSession;
@@ -27,6 +28,7 @@ class Chatnels extends StatefulWidget {
       required this.sessionToken,
       this.serviceProvider = 'chatnels.com',
       required this.viewData,
+      this.colorScheme = {},
       this.onChatnelsEvent,
       this.onReady,
       this.onRequestSession,
@@ -150,12 +152,12 @@ class _ChatnelsState extends State<Chatnels> {
     }
   }
 
-  void _injectEmbedData(Map<String, dynamic> viewData) {
+  void _injectEmbedData(
+      Map<String, dynamic> viewData) {
     try {
       String type = viewData['type'];
       String data = JsonEncoder().convert(viewData['data']);
       String options = JsonEncoder().convert(viewData['options']);
-      String colorScheme = JsonEncoder().convert(viewData['colorScheme']);
 
       _controller.runJavaScript('''
       if (window.ChatnelsClient) {
@@ -163,8 +165,8 @@ class _ChatnelsState extends State<Chatnels> {
           type: "$type",
           data: $data,
           options: $options,
-          colorScheme: $colorScheme,
         });
+        window.ChatnelsClient.setColorScheme(${JsonEncoder().convert(widget.colorScheme)});
       }
       ''');
     } catch (e) {}
