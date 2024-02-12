@@ -11,6 +11,7 @@ Make sure you have a valid orgDomain and session token first before initialize t
 | orgDomain        | String                                            |                | The organization domain name                            |
 | sessionToken     | String                                            |                | session token for accessing Chatnels service            |
 | viewData         | Map<String, dynamic>                              |                | config for showing specific view                        |
+| colorScheme      | Map<String, dynamic>                              |                | config for view's colours                               |
 | onReady          | VoidCallback?                                     |                | callback for Chatnels is loaded and ready to use        |
 | onRequestSession | VoidCallback?                                     |                | callback for requesting a new session                   |
 | onChatnelsEvents | Function(String type, Map<String, dynamic> data)? |                | callback for event data that will be passing to the app |
@@ -41,6 +42,15 @@ body: Chatnels(
        'displayId': value['displayId'],
      if (value['chatId'].length > 0) 'chatId': value['chatId']
    },
+ },
+ colorScheme: const {
+    'chatTheme': 'ios',
+    'chatInBoundBgColor': '245 245 245',
+    'chatInBoundTextColor': '0 0 0',
+    'chatOutBoundBgColor': '67 133 245',
+    'chatOutBoundTextColor': '255 255 255',
+    'chatDateDividerBgColor': '206 206 206',
+    'chatDateDividerBgOpacity': 0,
  },
  onRequestSession: () {
   // your code to request new Chatnels session token from your server
