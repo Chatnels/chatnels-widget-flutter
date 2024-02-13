@@ -176,6 +176,9 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                       ''');
                     if (type == ChatnelsEvents.CHAT_ACTION.name) {
                       // handle chat cmd action here
+                    } else if (type == ChatnelsEvents.EXTERNAL_URL.name) {
+                      // use url_launcher package
+                      // !await launchUrlString(data.url, mode: LaunchMode.inAppBrowserView);
                     }
                   },
                 );
