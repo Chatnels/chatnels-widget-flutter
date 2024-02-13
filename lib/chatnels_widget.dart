@@ -28,7 +28,7 @@ class Chatnels extends StatefulWidget {
       required this.sessionToken,
       this.serviceProvider = 'chatnels.com',
       required this.viewData,
-      this.colorScheme = {},
+      this.colorScheme = const {},
       this.onChatnelsEvent,
       this.onReady,
       this.onRequestSession,
