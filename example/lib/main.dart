@@ -154,8 +154,11 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                   },
                   colorScheme: const {
                     'chatTheme': 'ios',
+                    'chatFont': 'Poppins',
+                    'chatTextSize': '16px',
                     'chatInBoundBgColor': '245 245 245',
                     'chatInBoundTextColor': '0 0 0',
+                    'chatLinkTextColor': '255 255 255',
                     'chatOutBoundBgColor': '67 133 245',
                     'chatOutBoundTextColor': '255 255 255',
                     'chatDateDividerBgColor': '206 206 206',
@@ -167,12 +170,12 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                     _showDialog();
                   },
                   onChatnelsEvent: (type, data) {
-                    if (type == ChatnelsEvents.CHAT_ACTION.name) {
-                      // handle chat cmd action here
-                      debugPrint('''
+                    debugPrint('''
                       chat action $type:
                       data: $data
                       ''');
+                    if (type == ChatnelsEvents.CHAT_ACTION.name) {
+                      // handle chat cmd action here
                     }
                   },
                 );

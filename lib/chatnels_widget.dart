@@ -64,6 +64,11 @@ class _ChatnelsState extends State<Chatnels> {
       ..clearCache()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: (NavigationRequest request) {
+          widget.onChatnelsEvent!(
+              ChatnelsEvents.EXTERNAL_URL.name, {'url': request.url});
+          return NavigationDecision.prevent;
+        },
         onPageStarted: (String url) {
           debugPrint('Page started loading: $url');
         },
@@ -152,8 +157,7 @@ class _ChatnelsState extends State<Chatnels> {
     }
   }
 
-  void _injectEmbedData(
-      Map<String, dynamic> viewData) {
+  void _injectEmbedData(Map<String, dynamic> viewData) {
     try {
       String type = viewData['type'];
       String data = JsonEncoder().convert(viewData['data']);
