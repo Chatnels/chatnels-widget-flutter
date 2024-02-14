@@ -152,20 +152,20 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                       if (value['chatId'].length > 0) 'chatId': value['chatId']
                     },
                   },
-                  colorScheme: const {
-                    'chatTheme': 'ios',
-                    'chatFont': 'Poppins',
-                    'chatTextSize': '16px',
-                    'chatInBoundBgColor': '245 245 245',
-                    'chatInBoundTextColor': '0 0 0',
-                    'chatLinkTextColor': '255 255 255',
-                    'chatOutBoundBgColor': '67 133 245',
-                    'chatOutBoundTextColor': '255 255 255',
-                    'chatDateDividerBgColor': '206 206 206',
-                    'chatDateDividerBgOpacity': 0,
+                  colorScheme: {
+                    ChatnelsColorSchema.chatTheme.name: 'ios',
+                    ChatnelsColorSchema.chatFont.name: 'Poppins',
+                    ChatnelsColorSchema.chatTextSize.name: '16px',
+                    ChatnelsColorSchema.chatInboundBgColor.name: '245 245 245',
+                    ChatnelsColorSchema.chatInboundTextColor.name: '0 0 0',
+                    ChatnelsColorSchema.chatOutboundBgColor.name: '67 133 245',
+                    ChatnelsColorSchema.chatOutboundLinkTextColor.name:
+                        '255 255 255',
+                    ChatnelsColorSchema.chatOutboundTextColor.name:
+                        '255 255 255',
+                    ChatnelsColorSchema.chatDateDividerBgOpacity.name: 0,
                   },
-                  onReady: () {
-                  },
+                  onReady: () {},
                   onRequestSession: () {
                     _showDialog();
                   },

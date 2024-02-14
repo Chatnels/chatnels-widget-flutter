@@ -56,6 +56,7 @@ extension InternalChatnelsEventsExtension on InternalChatnelsEvents {
 }
 
 enum ChatnelsColorSchema {
+  chatTheme,
   chatFont,
   chatTextSize,
   chatActionNextBtnBgColor,
@@ -63,27 +64,29 @@ enum ChatnelsColorSchema {
   chatActionNextBtnTextColor,
   chatDateDividerBgColor,
   chatDateDividerBgOpacity,
-  chatInBoundBgColor,
-  chatInBoundBgOpacity,
-  chatInBoundLinkTextColor,
-  chatInBoundMentionTextColor,
-  chatInBoundTextColor,
+  chatInboundBgColor,
+  chatInboundBgOpacity,
+  chatInboundLinkTextColor,
+  chatInboundMentionTextColor,
+  chatInboundTextColor,
   chatSelectionBtnBgColor,
   chatSelectionBtnBorderColor,
   chatSelectionBtnTextColor,
   chatSelectionBtnBgColorSelected,
   chatSelectionBtnBorderColorSelected,
   chatSelectionBtnTextColorSelected,
-  chatOutBoundBgColor,
-  chatOutBoundBgOpacity,
-  chatOutBoundLinkTextColor,
-  chatOutBoundMentionTextColor,
-  chatOutBoundTextColor,
+  chatOutboundBgColor,
+  chatOutboundBgOpacity,
+  chatOutboundLinkTextColor,
+  chatOutboundMentionTextColor,
+  chatOutboundTextColor,
 }
 
 extension ChatnelsColorSchemaExtension on ChatnelsColorSchema {
   String get name {
     switch (this) {
+      case ChatnelsColorSchema.chatTheme:
+        return 'chatTheme';
       case ChatnelsColorSchema.chatFont:
         return 'chatFont';
       case ChatnelsColorSchema.chatTextSize:
@@ -98,16 +101,16 @@ extension ChatnelsColorSchemaExtension on ChatnelsColorSchema {
         return 'chatDateDividerBgColor';
       case ChatnelsColorSchema.chatDateDividerBgOpacity:
         return 'chatDateDividerBgOpacity';
-      case ChatnelsColorSchema.chatInBoundBgColor:
-        return 'chatInBoundBgColor';
-      case ChatnelsColorSchema.chatInBoundBgOpacity:
-        return 'chatInBoundBgOpacity';
-      case ChatnelsColorSchema.chatInBoundLinkTextColor:
-        return 'chatInBoundLinkTextColor';
-      case ChatnelsColorSchema.chatInBoundMentionTextColor:
-        return 'chatInBoundMentionTextColor';
-      case ChatnelsColorSchema.chatInBoundTextColor:
-        return 'chatInBoundTextColor';
+      case ChatnelsColorSchema.chatInboundBgColor:
+        return 'chatInboundBgColor';
+      case ChatnelsColorSchema.chatInboundBgOpacity:
+        return 'chatInboundBgOpacity';
+      case ChatnelsColorSchema.chatInboundLinkTextColor:
+        return 'chatInboundLinkTextColor';
+      case ChatnelsColorSchema.chatInboundMentionTextColor:
+        return 'chatInboundMentionTextColor';
+      case ChatnelsColorSchema.chatInboundTextColor:
+        return 'chatInboundTextColor';
       case ChatnelsColorSchema.chatSelectionBtnBgColor:
         return 'chatSelectionBtnBgColor';
       case ChatnelsColorSchema.chatSelectionBtnBorderColor:
@@ -120,16 +123,16 @@ extension ChatnelsColorSchemaExtension on ChatnelsColorSchema {
         return 'chatSelectionBtnBorderColorSelected';
       case ChatnelsColorSchema.chatSelectionBtnTextColorSelected:
         return 'chatSelectionBtnTextColorSelected';
-      case ChatnelsColorSchema.chatOutBoundBgColor:
-        return 'chatOutBoundBgColor';
-      case ChatnelsColorSchema.chatOutBoundBgOpacity:
-        return 'chatOutBoundBgOpacity';
-      case ChatnelsColorSchema.chatOutBoundLinkTextColor:
-        return 'chatOutBoundLinkTextColor';
-      case ChatnelsColorSchema.chatOutBoundMentionTextColor:
-        return 'chatOutBoundMentionTextColor';
-      case ChatnelsColorSchema.chatOutBoundTextColor:
-        return 'chatOutBoundTextColor';
+      case ChatnelsColorSchema.chatOutboundBgColor:
+        return 'chatOutboundBgColor';
+      case ChatnelsColorSchema.chatOutboundBgOpacity:
+        return 'chatOutboundBgOpacity';
+      case ChatnelsColorSchema.chatOutboundLinkTextColor:
+        return 'chatOutboundLinkTextColor';
+      case ChatnelsColorSchema.chatOutboundMentionTextColor:
+        return 'chatOutboundMentionTextColor';
+      case ChatnelsColorSchema.chatOutboundTextColor:
+        return 'chatOutboundTextColor';
       default:
         return '';
     }
