@@ -62,7 +62,6 @@ String htmlTemplate(
   </head>
   <body>
     <div id="chatnels-root" />
-    THis is the chatnels root!!!
   </body>
   </html>''';
 

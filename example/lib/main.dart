@@ -135,57 +135,66 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ValueListenableBuilder(
-            valueListenable: sessionTokenNotifier,
-            builder: (context, value, child) {
-              if (value['orgDomain'].length > 0 &&
-                  value['sessionToken'].length > 0) {
-                return Chatnels(
-                  serviceProvider: value['serviceProvider'],
-                  orgDomain: value['orgDomain'],
-                  sessionToken: value['sessionToken'],
-                  viewData: {
-                    'type': 'chat',
-                    'data': {
-                      if (value['displayId'].length > 0)
-                        'displayId': value['displayId'],
-                      if (value['chatId'].length > 0) 'chatId': value['chatId']
+        body: SafeArea(
+          top: true,
+          bottom: true,
+          left: true,
+          right: true,
+          child: ValueListenableBuilder(
+              valueListenable: sessionTokenNotifier,
+              builder: (context, value, child) {
+                if (value['orgDomain'].length > 0 &&
+                    value['sessionToken'].length > 0) {
+                  return Chatnels(
+                    serviceProvider: value['serviceProvider'],
+                    orgDomain: value['orgDomain'],
+                    sessionToken: value['sessionToken'],
+                    viewData: {
+                      'type': 'chat',
+                      'data': {
+                        if (value['displayId'].length > 0)
+                          'displayId': value['displayId'],
+                        if (value['chatId'].length > 0)
+                          'chatId': value['chatId']
+                      },
                     },
-                  },
-                  colorScheme: {
-                    ChatnelsColorSchema.chatTheme.name: 'ios',
-                    ChatnelsColorSchema.chatFont.name: 'Poppins',
-                    ChatnelsColorSchema.chatTextSize.name: '16px',
-                    ChatnelsColorSchema.chatInboundBgColor.name: '245 245 245',
-                    ChatnelsColorSchema.chatInboundTextColor.name: '0 0 0',
-                    ChatnelsColorSchema.chatOutboundBgColor.name: '67 133 245',
-                    ChatnelsColorSchema.chatOutboundLinkTextColor.name:
-                        '255 255 255',
-                    ChatnelsColorSchema.chatOutboundTextColor.name:
-                        '255 255 255',
-                    ChatnelsColorSchema.chatDateDividerBgOpacity.name: 0,
-                  },
-                  onReady: () {},
-                  onRequestSession: () {
-                    _showDialog();
-                  },
-                  onChatnelsEvent: (type, data) {
-                    debugPrint('''
+                    colorScheme: {
+                      ChatnelsColorSchema.chatTheme.name: 'ios',
+                      ChatnelsColorSchema.chatFont.name: 'Poppins',
+                      ChatnelsColorSchema.chatTextSize.name: '16px',
+                      ChatnelsColorSchema.chatInboundBgColor.name:
+                          '245 245 245',
+                      ChatnelsColorSchema.chatInboundTextColor.name: '0 0 0',
+                      ChatnelsColorSchema.chatOutboundBgColor.name:
+                          '67 133 245',
+                      ChatnelsColorSchema.chatOutboundLinkTextColor.name:
+                          '255 255 255',
+                      ChatnelsColorSchema.chatOutboundTextColor.name:
+                          '255 255 255',
+                      ChatnelsColorSchema.chatDateDividerBgOpacity.name: 0,
+                    },
+                    onReady: () {},
+                    onRequestSession: () {
+                      _showDialog();
+                    },
+                    onChatnelsEvent: (type, data) {
+                      debugPrint('''
                       chat action $type:
                       data: $data
                       ''');
-                    if (type == ChatnelsEvents.CHAT_ACTION.name) {
-                      // handle chat cmd action here
-                    } else if (type == ChatnelsEvents.EXTERNAL_URL.name) {
-                      // use url_launcher package
-                      // !await launchUrlString(data.url, mode: LaunchMode.inAppBrowserView);
-                    }
-                  },
-                );
-              }
+                      if (type == ChatnelsEvents.CHAT_ACTION.name) {
+                        // handle chat cmd action here
+                      } else if (type == ChatnelsEvents.EXTERNAL_URL.name) {
+                        // use url_launcher package
+                        // !await launchUrlString(data.url, mode: LaunchMode.inAppBrowserView);
+                      }
+                    },
+                  );
+                }
 
-              return Container();
-            }),
+                return Container();
+              }),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             _showDialog();
