@@ -16,11 +16,11 @@ String htmlTemplate(
         w.chatnelsAsync = function() {
           if(w.ChatnelsClient) {
             w.ChatnelsClient.load({
-              domain: '$orgDomain',
-              sessionToken: '$sessionToken',
-              ${initView != null ? "initView: ${const JsonEncoder().convert(initView)}" : ''}
+              domain: "$orgDomain",
+              sessionToken: "$sessionToken",
+              ${initView != null ? 'initView: ${const JsonEncoder().convert(initView)}' : ''}
             });
-            w.ChatnelsClient.on('chatnels:message', function(data) {
+            w.ChatnelsClient.on("chatnels:message", function(data) {
               if(w.ChatnelsWebView) {
                 w.ChatnelsWebView.postMessage(data);
               }
@@ -28,12 +28,12 @@ String htmlTemplate(
           }
         }
         
-        const a = d.createElement('script');
-        a.type = 'text/javascript';
-        a.src = 'https://statics.$serviceProvider/admin/js/chatnels.client.js';
+        const a = d.createElement("script");
+        a.type = "text/javascript";
+        a.src = "https://statics.$serviceProvider/admin/js/chatnels.client.js";
         a.async = true;
         a.onerror = function(message) {
-          w.ReactNativeWebView.postMessage(JSON.stringify({type: "${InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name}", data: message}));
+          w.ChatnelsWebView.postMessage(JSON.stringify({ type: "${InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name}", data: message }));
         };
         d.head.appendChild(a);
       })(window, document)
@@ -62,6 +62,7 @@ String htmlTemplate(
   </head>
   <body>
     <div id="chatnels-root" />
+    THis is the chatnels root!!!
   </body>
   </html>''';
 

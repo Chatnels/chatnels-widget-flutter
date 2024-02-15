@@ -3,7 +3,7 @@ library chatnels_widget;
 import 'dart:convert';
 
 import 'package:chatnels_widget/enums.dart';
-import 'package:chatnels_widget/htmlTemplate.dart';
+import 'package:chatnels_widget/html_template.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -65,8 +65,15 @@ class _ChatnelsState extends State<Chatnels> {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onNavigationRequest: (NavigationRequest request) {
+          debugPrint('onNavigationRequest: ${request.url}');
+          if (request.url == 'chatnels://local.chatnels.com/' ||
+              request.url == 'about:blank') {
+            return NavigationDecision.navigate;
+          }
+
           widget.onChatnelsEvent!(
               ChatnelsEvents.EXTERNAL_URL.name, {'url': request.url});
+
           return NavigationDecision.prevent;
         },
         onPageStarted: (String url) {
