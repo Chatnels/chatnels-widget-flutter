@@ -33,21 +33,21 @@ class ChatnelsHomePage extends StatefulWidget {
 class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
   final ValueNotifier<Map<String, dynamic>> sessionTokenNotifier =
       ValueNotifier<Map<String, dynamic>>({
-    'serviceProvider': 'chatnels.com',
-    'orgDomain': '',
-    'sessionToken': '',
+    'serviceProvider': 'dev.chatnels.com',
+    'orgDomain': 'thrivingdemo',
+    'sessionToken': '1vf7l0air6t6pv3dt26vr7j2lj',
     'displayId': '',
     'chatId': ''
   });
 
   final TextEditingController _serviceProviderInputCtrl =
-      TextEditingController(text: 'chatnels.com');
+      TextEditingController(text: 'dev.chatnels.com');
   final TextEditingController _orgDoaminInputCtrl =
-      TextEditingController(text: '');
+      TextEditingController(text: 'thrivingdemo');
   final TextEditingController _sessionTokenInputCtrl =
-      TextEditingController(text: '');
+      TextEditingController(text: '1vf7l0air6t6pv3dt26vr7j2lj');
   final TextEditingController _displayIdInputCtrl =
-      TextEditingController(text: '');
+      TextEditingController(text: '8128e344c6971c2a338699dfb3b70b5b');
   final TextEditingController _chatIdInputCtrl =
       TextEditingController(text: '');
   final _formKey = GlobalKey<FormState>();
@@ -196,6 +196,8 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
               }),
         ),
         floatingActionButton: FloatingActionButton(
+          mini: true,
+          tooltip: 'Chat Setting',
           onPressed: () {
             _showDialog();
           },

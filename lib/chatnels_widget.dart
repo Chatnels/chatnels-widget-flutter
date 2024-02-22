@@ -144,7 +144,10 @@ class _ChatnelsState extends State<Chatnels> {
         _injectEmbedData(widget.viewData);
         widget.onReady!();
       } else if (type == InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name) {
-        debugPrint('''Chatnels widget onError''');
+        debugPrint('''
+        Chatnels widget onError
+        $jsonObj
+        ''');
         widget.onError!();
       } else if (type == InternalChatnelsEvents.APP_REQUEST_FOCUS.name) {
         // unable to find any request focus method for the webview
