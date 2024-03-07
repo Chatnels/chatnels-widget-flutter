@@ -33,21 +33,21 @@ class ChatnelsHomePage extends StatefulWidget {
 class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
   final ValueNotifier<Map<String, dynamic>> sessionTokenNotifier =
       ValueNotifier<Map<String, dynamic>>({
-    'serviceProvider': 'dev.chatnels.com',
-    'orgDomain': 'thrivingdemo',
-    'sessionToken': '1vf7l0air6t6pv3dt26vr7j2lj',
+    'serviceProvider': 'chatnels.com',
+    'orgDomain': '',
+    'sessionToken': '',
     'displayId': '',
     'chatId': ''
   });
 
   final TextEditingController _serviceProviderInputCtrl =
-      TextEditingController(text: 'dev.chatnels.com');
+      TextEditingController(text: 'chatnels.com');
   final TextEditingController _orgDoaminInputCtrl =
-      TextEditingController(text: 'thrivingdemo');
+      TextEditingController(text: '');
   final TextEditingController _sessionTokenInputCtrl =
-      TextEditingController(text: '1vf7l0air6t6pv3dt26vr7j2lj');
+      TextEditingController(text: '');
   final TextEditingController _displayIdInputCtrl =
-      TextEditingController(text: '8128e344c6971c2a338699dfb3b70b5b');
+      TextEditingController(text: '');
   final TextEditingController _chatIdInputCtrl =
       TextEditingController(text: '');
   final _formKey = GlobalKey<FormState>();
