@@ -173,6 +173,9 @@ class _ChatnelsHomePageState extends State<ChatnelsHomePage> {
                           '255 255 255',
                       ChatnelsColorSchema.chatDateDividerBgOpacity.name: 0,
                     },
+                    additionalEvents: [
+                      ChatnelsEvents.CHAT_MESSAGE_INBOUND.name
+                    ],
                     onReady: () {},
                     onRequestSession: () {
                       _showDialog();

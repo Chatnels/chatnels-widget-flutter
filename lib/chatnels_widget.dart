@@ -18,6 +18,7 @@ class Chatnels extends StatefulWidget {
   final String sessionToken;
   final Map<String, dynamic> viewData;
   final Map<String, dynamic>? colorScheme;
+  final List<String>? additionalEvents;
   final void Function(String type, Map<String, dynamic> data)? onChatnelsEvent;
   final VoidCallback? onReady;
   final VoidCallback? onRequestSession;
@@ -29,6 +30,7 @@ class Chatnels extends StatefulWidget {
       this.serviceProvider = 'chatnels.com',
       required this.viewData,
       this.colorScheme = const {},
+      this.additionalEvents,
       this.onChatnelsEvent,
       this.onReady,
       this.onRequestSession,
@@ -181,6 +183,7 @@ class _ChatnelsState extends State<Chatnels> {
           options: $options,
         });
         window.ChatnelsClient.setColorScheme(${JsonEncoder().convert(widget.colorScheme)});
+        window.ChatnelsClient.additionalEvents = ${JsonEncoder().convert(widget.additionalEvents)};
       }
       ''');
     } catch (e) {}
