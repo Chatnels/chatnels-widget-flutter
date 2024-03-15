@@ -1,7 +1,6 @@
 library chatnels_widget;
 
 import 'dart:convert';
-
 import 'package:chatnels_widget/enums.dart';
 import 'package:chatnels_widget/html_template.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,7 @@ class Chatnels extends StatefulWidget {
       this.serviceProvider = 'chatnels.com',
       required this.viewData,
       this.colorScheme = const {},
-      this.additionalEvents,
+      this.additionalEvents = const [],
       this.onChatnelsEvent,
       this.onReady,
       this.onRequestSession,
@@ -158,7 +157,7 @@ class _ChatnelsState extends State<Chatnels> {
         widget.onRequestSession!();
       } else {
         debugPrint(
-            '''Chatnels widget onChatnelsEvent - type: $type - data: $data ''');
+            '''Chatnels widget trigger onChatnelsEvent - type: $type - data: $data ''');
         widget.onChatnelsEvent!(type, data);
       }
     } catch (e) {
