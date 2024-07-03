@@ -2,7 +2,7 @@ publish_to: none
 
 name: chatnels_widget
 description: "A Flutter plugin that allows you to integrate Chatnels"
-version: 0.3.2
+version: 0.3.3
 # authors: Justin Lee <justin.lee@chatnels.com>
 homepage: https://www.chatnels.com
 repository: https://github.com/Chatnels/chatnels-widget-flutter.git
