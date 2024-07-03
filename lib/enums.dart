@@ -1,6 +1,7 @@
 enum ChatnelsEvents {
   CHAT_ACTION,
   CHAT_CLOSED,
+  CHAT_CREATED,
   CHAT_MESSAGE,
   CHAT_MESSAGE_INBOUND,
   CHAT_MESSAGE_OUTBOUND,
@@ -19,6 +20,8 @@ extension ChatnelsEventsExtension on ChatnelsEvents {
         return 'chat:action';
       case ChatnelsEvents.CHAT_CLOSED:
         return 'chat:closed';
+      case ChatnelsEvents.CHAT_CREATED:
+        return 'chat:created';
       case ChatnelsEvents.CHAT_MESSAGE:
         return 'chat:message';
       case ChatnelsEvents.CHAT_MESSAGE_INBOUND:

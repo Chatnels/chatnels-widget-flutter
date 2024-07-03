@@ -22,6 +22,7 @@ class Chatnels extends StatefulWidget {
   final VoidCallback? onReady;
   final VoidCallback? onRequestSession;
   final VoidCallback? onError;
+  final bool inspectable;
 
   const Chatnels(
       {required this.orgDomain,
@@ -34,6 +35,7 @@ class Chatnels extends StatefulWidget {
       this.onReady,
       this.onRequestSession,
       this.onError,
+      this.inspectable = false,
       Key? key})
       : super(key: key);
 
@@ -99,9 +101,12 @@ class _ChatnelsState extends State<Chatnels> {
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
+      AndroidWebViewController.enableDebugging(widget.inspectable);
       (controller.platform as AndroidWebViewController)
           .setMediaPlaybackRequiresUserGesture(false);
+    } else if (controller.platform is WebKitWebViewController) {
+      (controller.platform as WebKitWebViewController)
+          .setInspectable(widget.inspectable);
     }
 
     _controller = controller;
@@ -118,12 +123,16 @@ class _ChatnelsState extends State<Chatnels> {
       _injectSessionToken(widget.sessionToken);
     }
 
-    if (JsonEncoder().convert(widget.viewData) !=
-        JsonEncoder().convert(oldWidget.viewData)) {
+    if (const JsonEncoder().convert(widget.viewData) !=
+        const JsonEncoder().convert(oldWidget.viewData)) {
       debugPrint(
-          '''view Data updated: old view Data - ${oldWidget.viewData}, new token ${widget.viewData}''');
+          '''view Data updated: old view Data - ${oldWidget.viewData}, new view Data ${widget.viewData}''');
       _injectEmbedData(widget.viewData);
     }
+  }
+
+  void sendChatMessage(String chatUUID, String message) {
+    _injectChatMessageData(chatUUID, message);
   }
 
   void updateSessionToken(String sessionToken) {
@@ -136,7 +145,8 @@ class _ChatnelsState extends State<Chatnels> {
 
   void _onWebViewMessageReceived(JavaScriptMessage message) {
     try {
-      Map<String, dynamic> jsonObj = JsonDecoder().convert(message.message);
+      Map<String, dynamic> jsonObj =
+          const JsonDecoder().convert(message.message);
       dynamic type = jsonObj['type'];
       dynamic data = jsonObj['data'];
 
@@ -146,7 +156,7 @@ class _ChatnelsState extends State<Chatnels> {
         widget.onReady!();
       } else if (type == InternalChatnelsEvents.LOAD_SCRIPT_ERROR.name) {
         debugPrint('''
-        Chatnels widget onError
+        Chatnels widget onLoadScriptError
         $jsonObj
         ''');
         widget.onError!();
@@ -164,6 +174,7 @@ class _ChatnelsState extends State<Chatnels> {
       debugPrint('''
       Error in parsing Chatnels webview message:
       $e
+      ${message.message}
       ''');
     }
   }
@@ -171,8 +182,8 @@ class _ChatnelsState extends State<Chatnels> {
   void _injectEmbedData(Map<String, dynamic> viewData) {
     try {
       String type = viewData['type'];
-      String data = JsonEncoder().convert(viewData['data']);
-      String options = JsonEncoder().convert(viewData['options']);
+      String data = const JsonEncoder().convert(viewData['data']);
+      String options = const JsonEncoder().convert(viewData['options']);
 
       _controller.runJavaScript('''
       if (window.ChatnelsClient) {
@@ -181,16 +192,24 @@ class _ChatnelsState extends State<Chatnels> {
           data: $data,
           options: $options,
         });
-        window.ChatnelsClient.setColorScheme(${JsonEncoder().convert(widget.colorScheme)});
-        window.ChatnelsClient.additionalEvents = ${JsonEncoder().convert(widget.additionalEvents)};
+        window.ChatnelsClient.setColorScheme(${const JsonEncoder().convert(widget.colorScheme)});
+        window.ChatnelsClient.additionalEvents = ${const JsonEncoder().convert(widget.additionalEvents)};
       }
       ''');
     } catch (e) {}
   }
 
+  void _injectChatMessageData(String chatUUID, String message) {
+    _controller.runJavaScript('''
+      if (window.ChatnelsClient && window.ChatnelsClient.sendChatMessage) {
+        window.ChatnelsClient.sendChatMessage($chatUUID, $message);
+      }
+    ''');
+  }
+
   void _injectSessionToken(String sessionToken) {
     _controller.runJavaScript('''
-        if (window.ChatnelsClient) {
+        if (window.ChatnelsClient && window.ChatnelsClient.updateSessionToken) {
             window.ChatnelsClient.updateSessionToken("$sessionToken");
         }
         ''');
