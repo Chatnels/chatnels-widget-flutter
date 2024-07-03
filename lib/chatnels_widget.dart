@@ -40,10 +40,10 @@ class Chatnels extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<Chatnels> createState() => _ChatnelsState();
+  State<Chatnels> createState() => ChatnelsState();
 }
 
-class _ChatnelsState extends State<Chatnels> {
+class ChatnelsState extends State<Chatnels> {
   late WebViewController _controller;
 
   @override
