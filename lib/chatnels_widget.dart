@@ -202,7 +202,7 @@ class ChatnelsState extends State<Chatnels> {
   void _injectChatMessageData(String chatUUID, String message) {
     _controller.runJavaScript('''
       if (window.ChatnelsClient && window.ChatnelsClient.sendChatMessage) {
-        window.ChatnelsClient.sendChatMessage($chatUUID, $message);
+        window.ChatnelsClient.sendChatMessage("$chatUUID", "$message");
       }
     ''');
   }
